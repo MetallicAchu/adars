@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dayline · Shachar Adar</title>
+<meta name="description" content="Dayline stores each night from Google Family Link and YouTube, compares it with earlier days, and writes an evening note.">
+<meta name="theme-color" content="#f6f9fd">
+<link rel="icon" type="image/svg+xml" href="../../images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f9fd;
+    --ink: #10203d;
+    --muted: #5c6b84;
+    --line: #e4ebf4;
+    --card: #ffffff;
+    --blue: #2457d6;
+    --green: #1f7a4d;
+    --rust: #9a3b24;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.5;
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 3px;
+  }
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: rgba(255,255,255,.92);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .brand { font-weight: 650; text-decoration: none; }
+  .navlinks { display: flex; gap: 20px; }
+  .navlinks a, .cta { text-decoration: none; color: var(--muted); }
+  .cta { margin-left: auto; color: var(--ink); font-weight: 600; }
+  .case { max-width: 760px; margin: 0 auto; padding: 28px 24px 80px; }
+  .sheet { background: #fff; border: 1px solid var(--line); border-radius: 28px; padding: 8px 8px 28px; }
+  .problem, #workflow, .block, .foot { padding: 36px 28px; scroll-margin-top: 72px; }
+  .pill, .kicker, .tag {
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 650;
+  }
+  h2 { font-size: 32px; letter-spacing: -0.03em; margin: 8px 0 10px; line-height: 1.15; }
+  .sub, .problem p, .block p { color: #2a3b58; max-width: 68ch; }
+  .mini-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 22px; }
+  .mini-flow li {
+    list-style: none;
+    background: #f7f9fc;
+    border-radius: 14px;
+    padding: 12px 14px;
+  }
+  .stages {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 22px;
+  }
+  .stages article {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 10px;
+    position: relative;
+  }
+  .stages .join { display: none; }
+  .stages article b, .stages article small, .case-node b, .case-node small { display: block; }
+  .stages article small, .case-node small { color: var(--muted); font-size: 12px; font-weight: 400; margin-top: 2px; }
+  .stages .join { flex: 0 0 auto; align-self: center; color: #b7c3d4; }
+  .n { position: absolute; top: 8px; right: 8px; color: #b7c3d4; font-size: 12px; }
+  .mini-arrow, .join { color: #b7c3d4; }
+  .split { display: block; }
+  .split figure { margin-top: 20px; }
+  .checks { padding: 0; margin: 16px 0 0; }
+  .case-back { color: var(--muted); text-decoration: none; font-size: 14px; }
+  .case-hero {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 40px;
+    align-items: center;
+    padding: 36px 0 48px;
+  }
+  .case-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .case-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  h1 { font-size: 56px; line-height: .95; letter-spacing: -0.03em; margin: 12px 0; }
+  h1 span { color: #6d7c93; }
+  .case-lead { font-size: 18px; max-width: 46ch; color: var(--ink); }
+  .case-actions { display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap; }
+  .case-btn {
+    text-decoration: none;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 600;
+  }
+  .case-btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .case-meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 14px; }
+  .case-meta i { width: 4px; height: 4px; border-radius: 50%; background: #c5d0de; align-self: center; }
+  .case-visual { position: relative; }
+  .case-hero-card, .case-float {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(16,32,61,.06);
+  }
+  .case-hero-card { padding: 18px; }
+  .case-topline { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .case-live { margin-left: auto; color: var(--green); font-weight: 700; font-size: 12px; }
+  .case-hero-flow { display: flex; align-items: center; gap: 8px; margin: 16px 0; flex-wrap: nowrap; }
+  .case-node { min-width: 0; }
+  .case-node b, .case-node small, .stages article b, .stages article small { display: block; }
+  .case-node small, .stages article small { color: var(--muted); font-size: 12px; font-weight: 400; margin-top: 2px; }
+  .case-arrow { color: #b7c3d4; }
+  .case-result { display: flex; gap: 10px; align-items: center; background: #f4faf6; border-radius: 12px; padding: 10px 12px; }
+  .case-check { color: var(--green); font-weight: 700; }
+  .case-result small { display: block; color: var(--muted); }
+  .case-float { position: absolute; padding: 10px 12px; font-size: 13px; }
+  .case-float b, .case-float span { display: block; }
+  .case-float span { color: var(--muted); }
+  .case-float-one { right: -8px; bottom: -18px; }
+  .case-float-two { left: -12px; top: -16px; }
+  .checks { padding: 0; margin: 16px 0 0; }
+  .checks li { list-style: none; padding: 6px 0 6px 22px; position: relative; }
+  .checks li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+  figure { margin: 0; }
+  figure img { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--line); background: #f4f1ea; }
+  figcaption { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .note { margin-top: 16px; }
+  .tech { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 28px; }
+  .tech span { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; background: #fff; font-size: 14px; }
+  .takes { padding: 8px 28px 0; }
+  .takes li { margin: 6px 0; }
+  .contact { margin-top: 28px; }
+  @media (max-width: 860px) {
+    .case-hero, .split { grid-template-columns: 1fr; }
+    h1 { font-size: 42px; }
+    .case-float { position: static; margin-top: 10px; }
+    .navlinks { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="root">
+<header class="bar">
+  <nav class="nav">
+    <a class="brand" href="../../index.html#top">Shachar Adar</a>
+    <div class="navlinks">
+      <a href="../../index.html#projects">Projects</a>
+      <a href="../../index.html#about">About</a>
+      <a href="../../index.html#contact">Contact</a>
+    </div>
+    <a class="cta" href="../../index.html#contact">Let’s Connect <span>→</span></a>
+  </nav>
+</header>
+<main class="case">
+  <a class="case-back" href="../../index.html#projects">← All projects</a>
+  <section class="case-hero" id="top">
+    <div>
+      <div class="case-eyebrow"><span class="case-dot"></span> Automation case study</div>
+      <h1>Dayline</h1>
+      <p class="case-lead">The day, after the fact. Family Link and YouTube come in overnight, the apps and videos are read, and an evening note says what changed.</p>
+      <div class="case-actions">
+        <a class="case-btn case-btn-primary" href="#workflow">See the workflow <span>↓</span></a>
+        <a class="case-btn" href="#week">This week</a>
+      </div>
+      <div class="case-meta">
+        <span>Family Link</span><i></i><span>YouTube</span><i></i><span>Gemini</span><i></i><span>Grok</span><i></i><span>HTML</span>
+      </div>
+    </div>
+    <div class="case-visual">
+      <div class="case-float case-float-two"><b>Stored nights</b><span>A gap is a night that was not stored</span></div>
+      <div class="case-hero-card">
+        <div class="case-topline"><span>Evening pipeline</span><span class="case-live">STORED</span></div>
+        <div class="case-hero-flow">
+          <div class="case-node"><b>Family Link</b><small>Devices</small></div>
+          <div class="case-arrow">→</div>
+          <div class="case-node"><b>YouTube</b><small>Videos</small></div>
+          <div class="case-arrow">→</div>
+          <div class="case-node"><b>Gemini</b><small>Judge</small></div>
+          <div class="case-arrow">→</div>
+          <div class="case-node"><b>Grok</b><small>Note</small></div>
+        </div>
+        <div class="case-result">
+          <span class="case-check">✓</span>
+          <div><b>Evening note ready</b><small>Cutoff time is stated. The day is not called complete.</small></div>
+        </div>
+      </div>
+      <div class="case-float case-float-one"><b>Missing flag</b><span>Not a no</span></div>
+    </div>
+  </section>
+
+  <div class="sheet">
+    <section class="problem" id="problem">
+      <div class="pill">The problem</div>
+      <h2>The day is split across two places.</h2>
+      <p>Family Link has the time and the apps. YouTube has the videos, and YouTube Kids does not report a watch date. A new app, or a video that needs a look, is easy to miss if those stay in two tabs.</p>
+      <ol class="mini-flow">
+        <li>Family Link</li>
+        <li class="mini-arrow">→</li>
+        <li>YouTube</li>
+        <li class="mini-arrow">→</li>
+        <li>Compare days</li>
+        <li class="mini-arrow">→</li>
+        <li>Missed video</li>
+      </ol>
+    </section>
+
+    <section id="workflow">
+      <div class="kicker">The solution</div>
+      <h2>One evening. Both sources.</h2>
+      <p class="sub">Family Link and YouTube are connected once. Each night the pull stores what it got. Videos are judged through the day. Grok writes the evening note and the app recommendations.</p>
+      <div class="stages">
+        <article><span class="n">1</span><b>Family Link</b><small>Supervised devices</small></article>
+        <span class="join">→</span>
+        <article><span class="n">2</span><b>YouTube</b><small>Videos saved on this PC</small></article>
+        <span class="join">→</span>
+        <article><span class="n">3</span><b>Pull</b><small>Store the night</small></article>
+        <span class="join">→</span>
+        <article><span class="n">4</span><b>Read</b><small>Apps, devices, earlier days</small></article>
+        <span class="join">→</span>
+        <article><span class="n">5</span><b>Gemini</b><small>Judge videos through the day</small></article>
+        <span class="join">→</span>
+        <article><span class="n">6</span><b>Grok</b><small>Evening note and app ideas</small></article>
+      </div>
+    </section>
+
+    <section class="block" id="week">
+      <div class="split">
+        <div>
+          <div class="tag"><span>01</span> This week</div>
+          <h2>The stored night, against the days already kept.</h2>
+          <p>Each child has a week chart. A selected day shows the total, how it sits against the last stored days, and which apps made up that night. A missing night is not counted as zero.</p>
+          <ul class="checks">
+            <li>Day total against the average of stored days</li>
+            <li>Apps that night, and the device that held the time</li>
+            <li>Week table uses stored days only</li>
+            <li>Grok writes the evening note from the cutoff, not from a finished day</li>
+          </ul>
+        </div>
+        <div>
+          <figure>
+            <img src="images/week.webp" alt="This week chart for one child. The name and age line are blurred.">
+            <figcaption>Names stay the real names, blurred. Not replaced.</figcaption>
+          </figure>
+          <figure class="note">
+            <img src="images/evening-note.webp" alt="Evening note for 7 October. The child's name is blurred. The note says the stored time is only through the 21:00 cutoff.">
+            <figcaption>Evening note. The cutoff is in the sentence, and the day is not called complete.</figcaption>
+          </figure>
+          <figure class="note">
+            <img src="images/apps-night.webp" alt="Apps that night and the device total. The device name is blurred.">
+            <figcaption>Apps that night, and how many videos still need a look.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="trends">
+      <div class="split">
+        <div>
+          <div class="tag"><span>02</span> Trends</div>
+          <h2>A gap is a night that was not stored.</h2>
+          <p>Week, month, and year. The year chart only rises where a night was kept. The comparison under it is the last 7 complete days against the 7 before them, per app.</p>
+          <ul class="checks">
+            <li>Days collected, with today called out as incomplete</li>
+            <li>Empty months are missing nights, not zero-use months</li>
+            <li>App deltas against the week before</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="images/trends.webp" alt="Year chart of stored days and a list of apps against the week before. Child names in the sidebar are blurred.">
+          <figcaption>39 stored days in the year. The sidebar names are blurred.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="block" id="apps">
+      <div class="split">
+        <div>
+          <div class="tag"><span>03</span> Apps</div>
+          <h2>New on the device, the day it shows up.</h2>
+          <p>The last 7 days before today, from nights that were stored. A first-seen app stays in the list until a later note replaces it. Grok suggests follow-on apps from what was already used, and says why.</p>
+          <ul class="checks">
+            <li>Time by app for the stored week</li>
+            <li>First-seen date on anything new</li>
+            <li>Recommendations stay until a note replaces them</li>
+            <li>Grok writes the app ideas. Gemini does not.</li>
+          </ul>
+        </div>
+        <div>
+          <figure>
+            <img src="images/apps.webp" alt="Apps page with new apps first seen on 7 October and a time chart. Child names are blurred.">
+            <figcaption>New on the device, then time. Names blurred in the sidebar.</figcaption>
+          </figure>
+          <figure class="note">
+            <img src="images/recommendations.webp" alt="Two app recommendations, Worms Zone and Snake.io, each with a reason tied to Snake Rivals.">
+            <figcaption>Recommendations follow an app already used, and say why.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="youtube">
+      <div class="split">
+        <div>
+          <div class="tag"><span>04</span> YouTube</div>
+          <h2>A missing flag is not a no.</h2>
+          <p>This page is every video saved on this PC. The evening file only includes videos with a watch date of that day. YouTube Kids has no watch date, so those stay on the page and stay out of that file. Gemini judges through the day. A label is shown only when YouTube or the evening note sent it.</p>
+          <ul class="checks">
+            <li>Fine, needs a look, or unsuitable</li>
+            <li>Unsuitable and needs-a-look include why, for that age</li>
+            <li>YouTube's own made-for-kids and age-restriction flags, when it sent them</li>
+            <li>Mark as seen stays on this page</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="images/youtube.webp" alt="YouTube page with a needs-a-look card. The reason mentions a demon creature that could scare a young child. Child names are blurred.">
+          <figcaption>Needs a look. The reason is on the card. Names blurred.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="foot">
+      <div class="kicker">Technologies</div>
+      <div class="tech">
+        <span>Python</span>
+        <span>FastAPI</span>
+        <span>HTML</span>
+        <span>Jinja</span>
+        <span>Gemini API</span>
+        <span>Grok API</span>
+        <span>Google Family Link</span>
+        <span>YouTube</span>
+      </div>
+      <div class="kicker" style="margin-top:28px">Key takeaways</div>
+      <ul class="takes">
+        <li>Both sources land in one evening read.</li>
+        <li>A missing night is not stored as zero.</li>
+        <li>Gemini judges the videos and has to say why.</li>
+        <li>Grok writes the evening note and the app recommendations.</li>
+        <li>The UI is plain HTML. FastAPI fills the numbers with Jinja. No JavaScript framework.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="contact" id="contact">
+    <h2>Let’s Connect</h2>
+    <p>I’m always open to interesting projects, collaboration, or new opportunities.</p>
+    <p><a href="mailto:shachar@adars.org?subject=Hello%20from%20adars.org">Get In Touch →</a></p>
+  </section>
+</main>
+</div>
+</body>
+</html>
