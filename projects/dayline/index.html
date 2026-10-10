@@ -4,393 +4,1417 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dayline · Shachar Adar</title>
-<meta name="description" content="Dayline stores each night from Google Family Link and YouTube, compares it with earlier days, and writes an evening note.">
+<meta name="description" content="Turns Family Link and YouTube activity into a nightly record, historical trends, app changes, and age-aware video review.">
 <meta name="theme-color" content="#f6f9fd">
 <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f6f9fd;
-    --ink: #10203d;
-    --muted: #5c6b84;
-    --line: #e4ebf4;
-    --card: #ffffff;
-    --blue: #2457d6;
-    --green: #1f7a4d;
-    --rust: #9a3b24;
+*, *::before, *::after { box-sizing: border-box; }
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-ext-400.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-400.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-ext-500.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-500.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-ext-600.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-600.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-ext-700.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-700.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-ext-800.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../../css/fonts/inter-latin-800.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    line-height: 1.5;
+}
+
+:root {
+  color-scheme: light;
+  --bg: #f6f9fd;
+  --surface: #fff;
+  --text: #10203d;
+  --muted: #536987;
+  --line: #dbe5f1;
+  --blue: #1769ff;
+  --shadow: 0 12px 30px rgba(20, 53, 100, 0.1);
+  --day-green: #2f795c;
+  --day-green-soft: #e8f2eb;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+  background: var(--bg);
+}
+
+#workflow,
+#evening-note,
+#contact,
+#top {
+  scroll-margin-top: 100px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.root {
+  min-height: 100vh;
+  background: var(--bg);
+  overflow-x: clip;
+}
+
+header.bar {
+  position: sticky;
+  top: 14px;
+  z-index: 10;
+  margin: 14px auto 0;
+  width: min(1120px, calc(100% - 40px));
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(20, 53, 100, 0.08);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  gap: 16px;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.navlinks {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #536987;
+}
+
+.navlinks a:hover {
+  color: var(--text);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #1769ff;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-weight: 700;
+  box-shadow: 0 7px 18px rgba(23, 105, 255, 0.22);
+  white-space: nowrap;
+}
+
+.case {
+  --ink: #10233f;
+  --muted: #65748b;
+  --line: #dbe5f0;
+  --blue: #1479ff;
+  --navy: #0c1d35;
+  width: min(1120px, calc(100% - 40px));
+  margin: 22px auto 8px;
+  color: var(--ink);
+  color-scheme: light;
+}
+
+.case-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.case-back:hover {
+  color: var(--ink);
+}
+
+.case h1,
+.case h2,
+.case h3,
+.case p {
+  margin: 0;
+}
+
+.case h1,
+.case h2,
+.sheet h2,
+.block h2 {
+  font-weight: 400;
+}
+
+.case h1 span,
+.case h2 span,
+.sheet h2 span {
+  color: var(--blue);
+}
+
+.case-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: center;
+  padding: 28px 0 64px;
+}
+
+.case-eyebrow,
+.kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #65809e;
+}
+
+.case-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.case-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #20c997;
+  box-shadow: 0 0 0 5px rgba(32, 201, 151, 0.12);
+  flex: none;
+}
+
+.case-hero h1 {
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  margin: 16px 0 18px;
+  text-wrap: balance;
+}
+
+.case-lead {
+  font-size: 18px;
+  line-height: 1.5;
+  color: #53647a;
+  max-width: 540px;
+}
+
+.case-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 26px 0;
+}
+
+.case-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 16px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.case-btn:hover {
+  background: #f4f8fc;
+}
+
+.case-btn-primary {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.case-btn-primary:hover {
+  background: #132844;
+}
+
+.case-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 11px;
+  color: #73839a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.case-meta i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #9db1c9;
+  flex: none;
+}
+
+.case-visual {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.case-orbit {
+  position: absolute;
+  border: 1px solid rgba(20, 121, 255, 0.16);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.case-orbit-a {
+  width: 420px;
+  height: 420px;
+}
+
+.case-orbit-b {
+  width: 290px;
+  height: 290px;
+  border-style: dashed;
+}
+
+.case-hero-card {
+  position: relative;
+  z-index: 2;
+  width: min(560px, 100%);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: 0 24px 70px rgba(25, 57, 91, 0.1);
+  padding: 22px;
+}
+
+.dash {
+  display: grid;
+  grid-template-columns: 126px minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+}
+
+.dash-side {
+  min-width: 0;
+}
+
+.dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.dash-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  background: var(--navy);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.dash-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 8px;
+  color: #7b8796;
+  font-size: 12px;
+}
+
+.dash-link.active {
+  color: #1c6045;
+  background: var(--day-green-soft);
+  font-weight: 700;
+}
+
+.dash-link svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.dash-main {
+  min-width: 0;
+}
+
+.dash-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dash-head b {
+  font-size: 15px;
+  letter-spacing: -0.03em;
+}
+
+.week-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7481;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.fake-select {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 4px 8px;
+  color: #4e5b6b;
+  white-space: nowrap;
+}
+
+.chart-card {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #e7eef6;
+  border-radius: 14px;
+  background: #fbfdff;
+  padding: 12px;
+  min-width: 0;
+}
+
+.metric {
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.metric span {
+  display: block;
+  margin-top: 4px;
+  color: #737d89;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.bars {
+  height: 92px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+  border-bottom: 1px solid #e3e8e3;
+  background: repeating-linear-gradient(to top, transparent 0, transparent 22px, #f0f3f1 23px);
+}
+
+.bar-col {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+}
+
+.bar-col i {
+  display: block;
+  width: min(16px, 78%);
+  max-height: calc(100% - 16px);
+  border-radius: 4px 4px 0 0;
+  background: var(--day-green);
+}
+
+.bar-col em {
+  font-style: normal;
+  font-size: 10px;
+  color: #727c87;
+  font-weight: 600;
+}
+
+.fact-row {
+  position: relative;
+  z-index: 2;
+  width: min(560px, 100%);
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.case-float {
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 15px 35px rgba(25, 57, 91, 0.1);
+  padding: 11px 14px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 64px;
+  min-width: 0;
+}
+
+.case-float b {
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.sheet {
+  --ink: #1c2b55;
+  --muted: #5d6d88;
+  --line: #e4edf6;
+  color: var(--ink);
+  padding-bottom: 48px;
+}
+
+.sheet h2,
+.block h2,
+.solution h2,
+.ai-wrap h2 {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  color: #1a2d6d;
+  margin: 8px 0 12px;
+  text-wrap: balance;
+}
+
+.kicker {
+  color: #7b8eab;
+}
+
+.sheet .sub,
+.block p,
+.problem p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 640px;
+}
+
+.problem {
+  display: grid;
+  grid-template-columns: 0.9fr 1.3fr;
+  gap: 22px;
+  align-items: center;
+  margin: 8px 0 56px;
+  padding: 22px;
+  background: #fff4f6;
+  border: 1px solid #ffd9e1;
+  border-radius: 24px;
+}
+
+.problem-copy {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.target {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ff4d6a;
+  color: #fff;
+  font-weight: 800;
+}
+
+.problem .pill {
+  display: inline-block;
+  background: #ff4d6a;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.problem h2 {
+  font-size: 26px;
+  margin: 8px 0 6px;
+}
+
+.mini-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.mini-flow li:not(.mini-arrow) {
+  flex: 1 1 0;
+  min-width: 0;
+  background: #fff;
+  border-radius: 14px;
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(180, 60, 90, 0.06);
+  padding: 10px 6px;
+}
+
+.mini-flow li:not(.mini-arrow) svg {
+  width: 36px;
+  height: 36px;
+  display: block;
+}
+
+.mini-flow small {
+  display: block;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.mini-arrow {
+  align-self: center;
+  color: #f3a0b0;
+  font-size: 14px;
+  flex: none;
+}
+
+.solution {
+  margin-bottom: 8px;
+}
+
+.flow-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr) 18px minmax(0, 1fr) 18px minmax(0, 1fr) 18px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+.flow-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.node {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px 8px 12px;
+  text-align: center;
+  box-shadow: 0 10px 28px rgba(28, 60, 110, 0.05);
+  min-width: 0;
+}
+
+.node .mark {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 8px;
+  display: grid;
+  place-items: center;
+}
+
+.node .mark svg,
+.node .mark img {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+.node b {
+  display: block;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.node small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.join {
+  text-align: center;
+  color: #9eb0c8;
+  font-size: 16px;
+}
+
+.block {
+  margin-top: 28px;
+  background: #fff;
+  border: 1px solid #e4edf6;
+  border-radius: 26px;
+  padding: 28px;
+  box-shadow: 0 14px 36px rgba(28, 60, 110, 0.04);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #3d5ccc;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tag span {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: #4c74ff;
+  color: #fff;
+  letter-spacing: 0;
+  font-size: 11px;
+}
+
+.checks {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.tick {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+
+.tick.blue circle {
+  fill: #4c74ff;
+}
+
+.sheet details {
+  margin-top: 18px;
+}
+
+.sheet summary {
+  cursor: pointer;
+  width: fit-content;
+  min-height: 44px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  color: #3d5ccc;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.sheet summary::-webkit-details-marker {
+  display: none;
+}
+
+.sheet summary .when-open {
+  display: none;
+}
+
+.sheet details[open] > summary .when-closed {
+  display: none;
+}
+
+.sheet details[open] > summary .when-open {
+  display: inline;
+}
+
+.more {
+  margin-top: 4px;
+  background: #f5f8fd;
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+
+.more b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.more p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 70ch;
+}
+
+.more p + p {
+  margin-top: 7px;
+}
+
+.preview {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 16px 40px rgba(28, 60, 110, 0.08);
+  min-width: 0;
+}
+
+.preview-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.preview-bar span,
+.preview-quiet {
+  color: #87909a;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pill-quiet {
+  display: inline-block;
+  border: 1px solid #e2ddd3;
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 11px;
+  color: #6e7784;
+  margin-bottom: 12px;
+}
+
+.note {
+  border: 1px solid #eee9df;
+  border-radius: 10px;
+  padding: 14px;
+  color: #475467;
+  line-height: 1.5;
+  font-size: 13px;
+  background: #fdfbf6;
+}
+
+.mini-chart-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: #687385;
+  margin-bottom: 8px;
+}
+
+.mini-chart {
+  height: 148px;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  border-bottom: 1px solid #e5e9e4;
+  background: repeating-linear-gradient(to top, transparent 0, transparent 28px, #f0f1ed 29px);
+  padding: 0 2px;
+}
+
+.mini-chart i {
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  background: var(--day-green);
+  border-radius: 3px 3px 0 0;
+}
+
+.mini-axis {
+  display: flex;
+  justify-content: space-between;
+  color: #8b929a;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tab {
+  font-size: 12px;
+  padding: 6px 8px;
+  border: 1px solid #e9e4da;
+  border-radius: 8px;
+  color: #657080;
+  background: #fbf8f2;
+}
+
+.tab.active {
+  border-color: #d4e5d9;
+  background: var(--day-green-soft);
+  color: #245c44;
+  font-weight: 700;
+}
+
+.app-row,
+.video-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #f0ece5;
+  padding: 10px 0;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.app-row:last-child,
+.video-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.app-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex: none;
+}
+
+.app-icon.roblox { background: #242c39; }
+.app-icon.youtube { background: #e44739; }
+.app-icon.chrome { background: #457cbd; }
+.app-icon.whatsapp { background: #4e9874; }
+
+.app-name,
+.video-copy {
+  min-width: 0;
+}
+
+.app-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-time {
+  margin-left: auto;
+  color: #75808c;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.video-row {
+  align-items: center;
+}
+
+.thumb {
+  width: 72px;
+  height: 52px;
+  border-radius: 8px;
+  flex: none;
+  overflow: hidden;
+  border: 1px solid #e5e0d6;
+}
+
+.thumb svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.video-name {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.video-time {
+  font-size: 12px;
+  color: #7a8491;
+  margin-top: 2px;
+}
+
+.status {
+  display: inline-flex;
+  margin-top: 6px;
+  border: 1px solid #ead9cd;
+  color: #9a5a39;
+  background: #fff3ea;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.status.fine {
+  color: #516176;
+  border-color: #dce1e4;
+  background: #f3f5f6;
+}
+
+.ai-wrap {
+  margin-top: 36px;
+}
+
+.ai-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.ai-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-height: 94px;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #e4edf6;
+  border-radius: 26px;
+  box-shadow: 0 14px 36px rgba(28, 60, 110, 0.04);
+}
+
+.ai-icon {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+.ai-icon svg,
+.ai-icon img {
+  width: 34px;
+  height: 34px;
+}
+
+.ai-card h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0 0 2px;
+}
+
+.ai-card .role {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: #5d6878;
+}
+
+.ai-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #7a8390;
+}
+
+.foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.85fr);
+  gap: 22px;
+  margin-top: 28px;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e4edf6;
+  border-radius: 24px;
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 12px 10px;
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.tech li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 76px;
+  max-width: 96px;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #41506a;
+  text-align: center;
+}
+
+.tech svg,
+.tech img {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+img.grok-bot {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.checks.tight {
+  margin-top: 14px;
+}
+
+.site-footer {
+  margin: 28px auto 20px;
+  width: min(1080px, calc(100% - 80px));
+  padding: 26px 34px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 8px 24px rgba(20, 53, 100, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.site-footer h2 {
+  margin: 0 0 5px;
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.site-footer p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.site-footer .cta {
+  white-space: nowrap;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-actions .cta {
+  flex: 0 0 auto;
+  padding: 10px 15px;
+  font-size: 14px;
+}
+
+.social a.round {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-weight: 800;
+  color: var(--muted);
+  background: transparent;
+}
+
+.social a.round svg {
+  width: 22px;
+  height: 22px;
+}
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1000px) {
+  .case-hero,
+  .problem,
+  .split,
+  .ai-cards,
+  .foot {
+    grid-template-columns: 1fr;
   }
-  a { color: inherit; }
-  a:focus-visible, button:focus-visible {
-    outline: 2px solid var(--blue);
-    outline-offset: 3px;
+
+  .case-visual {
+    min-height: 0;
   }
-  .bar {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: rgba(255,255,255,.92);
-    border-bottom: 1px solid var(--line);
+
+  .mini-flow {
+    flex-wrap: wrap;
   }
+
+  .mini-arrow {
+    display: none;
+  }
+
+  .mini-flow li:not(.mini-arrow) {
+    flex: 1 1 calc(50% - 6px);
+  }
+
+  .flow-row {
+    grid-template-columns: 1fr;
+  }
+
+  .join {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 760px) {
+  header.bar {
+    width: calc(100% - 24px);
+  }
+
+  .navlinks {
+    order: 3;
+    flex: 1 0 100%;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+  }
+
   .nav {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    gap: 28px;
-  }
-  .brand { font-weight: 650; text-decoration: none; }
-  .navlinks { display: flex; gap: 20px; }
-  .navlinks a, .cta { text-decoration: none; color: var(--muted); }
-  .cta { margin-left: auto; color: var(--ink); font-weight: 600; }
-  .case { max-width: 760px; margin: 0 auto; padding: 28px 24px 80px; }
-  .sheet { background: #fff; border: 1px solid var(--line); border-radius: 28px; padding: 8px 8px 28px; }
-  .problem, #workflow, .block, .foot { padding: 36px 28px; scroll-margin-top: 72px; }
-  .pill, .kicker, .tag {
-    font-size: 12px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 650;
-  }
-  h2 { font-size: 32px; letter-spacing: -0.03em; margin: 8px 0 10px; line-height: 1.15; }
-  .sub, .problem p, .block p { color: #2a3b58; max-width: 68ch; }
-  .mini-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 22px; }
-  .mini-flow li {
-    list-style: none;
-    background: #f7f9fc;
-    border-radius: 14px;
+    flex-wrap: wrap;
+    row-gap: 10px;
     padding: 12px 14px;
   }
-  .stages {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    gap: 8px;
-    margin-top: 22px;
+
+  .brand {
+    font-size: 18px;
   }
-  .stages article {
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    list-style: none;
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 12px 10px;
-    position: relative;
+
+  header.bar .cta {
+    padding: 8px 12px;
+    font-size: 13px;
   }
-  .stages .join { display: none; }
-  .stages article b, .stages article small, .case-node b, .case-node small { display: block; }
-  .stages article small, .case-node small { color: var(--muted); font-size: 12px; font-weight: 400; margin-top: 2px; }
-  .stages .join { flex: 0 0 auto; align-self: center; color: #b7c3d4; }
-  .n { position: absolute; top: 8px; right: 8px; color: #b7c3d4; font-size: 12px; }
-  .mini-arrow, .join { color: #b7c3d4; }
-  .split { display: block; }
-  .split figure { margin-top: 20px; }
-  .checks { padding: 0; margin: 16px 0 0; }
-  .case-back { color: var(--muted); text-decoration: none; font-size: 14px; }
-  .case-hero {
+
+  .site-footer {
+    margin: 20px auto 12px;
+    width: calc(100% - 36px);
+    display: block;
+    padding: 25px;
+  }
+
+  .social {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  .case {
+    width: min(100% - 24px, 1120px);
+  }
+
+  .case-orbit-a {
+    width: 260px;
+    height: 260px;
+  }
+
+  .case-orbit-b {
+    width: 180px;
+    height: 180px;
+  }
+
+  .dash,
+  .chart-card,
+  .fact-row,
+  .problem,
+  .mini-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-flow {
     display: grid;
-    grid-template-columns: 1.1fr .9fr;
-    gap: 40px;
-    align-items: center;
-    padding: 36px 0 48px;
   }
-  .case-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 600;
+
+  .mini-flow li:not(.mini-arrow) {
+    flex: none;
   }
-  .case-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
-  h1 { font-size: 56px; line-height: .95; letter-spacing: -0.03em; margin: 12px 0; }
-  h1 span { color: #6d7c93; }
-  .case-lead { font-size: 18px; max-width: 46ch; color: var(--ink); }
-  .case-actions { display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap; }
-  .case-btn {
-    text-decoration: none;
-    border: 1px solid var(--line);
-    background: #fff;
-    border-radius: 999px;
-    padding: 10px 16px;
-    font-weight: 600;
+
+  .block,
+  .ai-card {
+    padding: 18px;
+    border-radius: 20px;
   }
-  .case-btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
-  .case-meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 14px; }
-  .case-meta i { width: 4px; height: 4px; border-radius: 50%; background: #c5d0de; align-self: center; }
-  .case-visual { position: relative; }
-  .case-hero-card, .case-float {
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    box-shadow: 0 10px 30px rgba(16,32,61,.06);
+
+  .tech li {
+    flex-basis: 64px;
+    font-size: 10px;
   }
-  .case-hero-card { padding: 18px; }
-  .case-topline { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-  .case-live { margin-left: auto; color: var(--green); font-weight: 700; font-size: 12px; }
-  .case-hero-flow { display: flex; align-items: center; gap: 8px; margin: 16px 0; flex-wrap: nowrap; }
-  .case-node { min-width: 0; }
-  .case-node b, .case-node small, .stages article b, .stages article small { display: block; }
-  .case-node small, .stages article small { color: var(--muted); font-size: 12px; font-weight: 400; margin-top: 2px; }
-  .case-arrow { color: #b7c3d4; }
-  .case-result { display: flex; gap: 10px; align-items: center; background: #f4faf6; border-radius: 12px; padding: 10px 12px; }
-  .case-check { color: var(--green); font-weight: 700; }
-  .case-result small { display: block; color: var(--muted); }
-  .case-float { position: absolute; padding: 10px 12px; font-size: 13px; }
-  .case-float b, .case-float span { display: block; }
-  .case-float span { color: var(--muted); }
-  .case-float-one { right: -8px; bottom: -18px; }
-  .case-float-two { left: -12px; top: -16px; }
-  .checks { padding: 0; margin: 16px 0 0; }
-  .checks li { list-style: none; padding: 6px 0 6px 22px; position: relative; }
-  .checks li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
-  figure { margin: 0; }
-  figure img { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--line); background: #f4f1ea; }
-  figcaption { color: var(--muted); font-size: 13px; margin-top: 8px; }
-  .note { margin-top: 16px; }
-  .tech { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 28px; }
-  .tech span { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; background: #fff; font-size: 14px; }
-  .takes { padding: 8px 28px 0; }
-  .takes li { margin: 6px 0; }
-  .contact { margin-top: 28px; }
-  @media (max-width: 860px) {
-    .case-hero, .split { grid-template-columns: 1fr; }
-    h1 { font-size: 42px; }
-    .case-float { position: static; margin-top: 10px; }
-    .navlinks { display: none; }
+
+  .tech svg,
+  .tech img {
+    width: 32px;
+    height: 32px;
   }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
+
+  .metric {
+    font-size: 26px;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 </style>
 </head>
 <body>
-<div class="root">
-<header class="bar">
-  <nav class="nav">
-    <a class="brand" href="../../index.html#top">Shachar Adar</a>
-    <div class="navlinks">
-      <a href="../../index.html#projects">Projects</a>
-      <a href="../../index.html#about">About</a>
-      <a href="../../index.html#contact">Contact</a>
-    </div>
-    <a class="cta" href="../../index.html#contact">Let’s Connect <span>→</span></a>
-  </nav>
-</header>
-<main class="case">
-  <a class="case-back" href="../../index.html#projects">← All projects</a>
-  <section class="case-hero" id="top">
-    <div>
-      <div class="case-eyebrow"><span class="case-dot"></span> Automation case study</div>
-      <h1>Dayline</h1>
-      <p class="case-lead">The day, after the fact. Family Link and YouTube come in overnight, the apps and videos are read, and an evening note says what changed.</p>
-      <div class="case-actions">
-        <a class="case-btn case-btn-primary" href="#workflow">See the workflow <span>↓</span></a>
-        <a class="case-btn" href="#week">This week</a>
-      </div>
-      <div class="case-meta">
-        <span>Family Link</span><i></i><span>YouTube</span><i></i><span>Gemini</span><i></i><span>Grok</span><i></i><span>HTML</span>
-      </div>
-    </div>
-    <div class="case-visual">
-      <div class="case-float case-float-two"><b>Stored nights</b><span>A gap is a night that was not stored</span></div>
-      <div class="case-hero-card">
-        <div class="case-topline"><span>Evening pipeline</span><span class="case-live">STORED</span></div>
-        <div class="case-hero-flow">
-          <div class="case-node"><b>Family Link</b><small>Devices</small></div>
-          <div class="case-arrow">→</div>
-          <div class="case-node"><b>YouTube</b><small>Videos</small></div>
-          <div class="case-arrow">→</div>
-          <div class="case-node"><b>Gemini</b><small>Judge</small></div>
-          <div class="case-arrow">→</div>
-          <div class="case-node"><b>Grok</b><small>Note</small></div>
-        </div>
-        <div class="case-result">
-          <span class="case-check">✓</span>
-          <div><b>Evening note ready</b><small>Cutoff time is stated. The day is not called complete.</small></div>
-        </div>
-      </div>
-      <div class="case-float case-float-one"><b>Missing flag</b><span>Not a no</span></div>
-    </div>
-  </section>
-
-  <div class="sheet">
-    <section class="problem" id="problem">
-      <div class="pill">The problem</div>
-      <h2>The day is split across two places.</h2>
-      <p>Family Link has the time and the apps. YouTube has the videos, and YouTube Kids does not report a watch date. A new app, or a video that needs a look, is easy to miss if those stay in two tabs.</p>
-      <ol class="mini-flow">
-        <li>Family Link</li>
-        <li class="mini-arrow">→</li>
-        <li>YouTube</li>
-        <li class="mini-arrow">→</li>
-        <li>Compare days</li>
-        <li class="mini-arrow">→</li>
-        <li>Missed video</li>
-      </ol>
-    </section>
-
-    <section id="workflow">
-      <div class="kicker">The solution</div>
-      <h2>One evening. Both sources.</h2>
-      <p class="sub">Family Link and YouTube are connected once. Each night the pull stores what it got. Videos are judged through the day. Grok writes the evening note and the app recommendations.</p>
-      <div class="stages">
-        <article><span class="n">1</span><b>Family Link</b><small>Supervised devices</small></article>
-        <span class="join">→</span>
-        <article><span class="n">2</span><b>YouTube</b><small>Videos saved on this PC</small></article>
-        <span class="join">→</span>
-        <article><span class="n">3</span><b>Pull</b><small>Store the night</small></article>
-        <span class="join">→</span>
-        <article><span class="n">4</span><b>Read</b><small>Apps, devices, earlier days</small></article>
-        <span class="join">→</span>
-        <article><span class="n">5</span><b>Gemini</b><small>Judge videos through the day</small></article>
-        <span class="join">→</span>
-        <article><span class="n">6</span><b>Grok</b><small>Evening note and app ideas</small></article>
-      </div>
-    </section>
-
-    <section class="block" id="week">
-      <div class="split">
-        <div>
-          <div class="tag"><span>01</span> This week</div>
-          <h2>The stored night, against the days already kept.</h2>
-          <p>Each child has a week chart. A selected day shows the total, how it sits against the last stored days, and which apps made up that night. A missing night is not counted as zero.</p>
-          <ul class="checks">
-            <li>Day total against the average of stored days</li>
-            <li>Apps that night, and the device that held the time</li>
-            <li>Week table uses stored days only</li>
-            <li>Grok writes the evening note from the cutoff, not from a finished day</li>
-          </ul>
-        </div>
-        <div>
-          <figure>
-            <img src="images/week.webp" alt="This week chart for one child. The name and age line are blurred.">
-            <figcaption>Names stay the real names, blurred. Not replaced.</figcaption>
-          </figure>
-          <figure class="note">
-            <img src="images/evening-note.webp" alt="Evening note for 7 October. The child's name is blurred. The note says the stored time is only through the 21:00 cutoff.">
-            <figcaption>Evening note. The cutoff is in the sentence, and the day is not called complete.</figcaption>
-          </figure>
-          <figure class="note">
-            <img src="images/apps-night.webp" alt="Apps that night and the device total. The device name is blurred.">
-            <figcaption>Apps that night, and how many videos still need a look.</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" id="trends">
-      <div class="split">
-        <div>
-          <div class="tag"><span>02</span> Trends</div>
-          <h2>A gap is a night that was not stored.</h2>
-          <p>Week, month, and year. The year chart only rises where a night was kept. The comparison under it is the last 7 complete days against the 7 before them, per app.</p>
-          <ul class="checks">
-            <li>Days collected, with today called out as incomplete</li>
-            <li>Empty months are missing nights, not zero-use months</li>
-            <li>App deltas against the week before</li>
-          </ul>
-        </div>
-        <figure>
-          <img src="images/trends.webp" alt="Year chart of stored days and a list of apps against the week before. Child names in the sidebar are blurred.">
-          <figcaption>39 stored days in the year. The sidebar names are blurred.</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section class="block" id="apps">
-      <div class="split">
-        <div>
-          <div class="tag"><span>03</span> Apps</div>
-          <h2>New on the device, the day it shows up.</h2>
-          <p>The last 7 days before today, from nights that were stored. A first-seen app stays in the list until a later note replaces it. Grok suggests follow-on apps from what was already used, and says why.</p>
-          <ul class="checks">
-            <li>Time by app for the stored week</li>
-            <li>First-seen date on anything new</li>
-            <li>Recommendations stay until a note replaces them</li>
-            <li>Grok writes the app ideas. Gemini does not.</li>
-          </ul>
-        </div>
-        <div>
-          <figure>
-            <img src="images/apps.webp" alt="Apps page with new apps first seen on 7 October and a time chart. Child names are blurred.">
-            <figcaption>New on the device, then time. Names blurred in the sidebar.</figcaption>
-          </figure>
-          <figure class="note">
-            <img src="images/recommendations.webp" alt="Two app recommendations, Worms Zone and Snake.io, each with a reason tied to Snake Rivals.">
-            <figcaption>Recommendations follow an app already used, and say why.</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" id="youtube">
-      <div class="split">
-        <div>
-          <div class="tag"><span>04</span> YouTube</div>
-          <h2>A missing flag is not a no.</h2>
-          <p>This page is every video saved on this PC. The evening file only includes videos with a watch date of that day. YouTube Kids has no watch date, so those stay on the page and stay out of that file. Gemini judges through the day. A label is shown only when YouTube or the evening note sent it.</p>
-          <ul class="checks">
-            <li>Fine, needs a look, or unsuitable</li>
-            <li>Unsuitable and needs-a-look include why, for that age</li>
-            <li>YouTube's own made-for-kids and age-restriction flags, when it sent them</li>
-            <li>Mark as seen stays on this page</li>
-          </ul>
-        </div>
-        <figure>
-          <img src="images/youtube.webp" alt="YouTube page with a needs-a-look card. The reason mentions a demon creature that could scare a young child. Child names are blurred.">
-          <figcaption>Needs a look. The reason is on the card. Names blurred.</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section class="foot">
-      <div class="kicker">Technologies</div>
-      <div class="tech">
-        <span>Python</span>
-        <span>FastAPI</span>
-        <span>HTML</span>
-        <span>Jinja</span>
-        <span>Gemini API</span>
-        <span>Grok API</span>
-        <span>Google Family Link</span>
-        <span>YouTube</span>
-      </div>
-      <div class="kicker" style="margin-top:28px">Key takeaways</div>
-      <ul class="takes">
-        <li>Both sources land in one evening read.</li>
-        <li>A missing night is not stored as zero.</li>
-        <li>Gemini judges the videos and has to say why.</li>
-        <li>Grok writes the evening note and the app recommendations.</li>
-        <li>The UI is plain HTML. FastAPI fills the numbers with Jinja. No JavaScript framework.</li>
-      </ul>
-    </section>
-  </div>
-
-  <section class="contact" id="contact">
-    <h2>Let’s Connect</h2>
-    <p>I’m always open to interesting projects, collaboration, or new opportunities.</p>
-    <p><a href="mailto:shachar@adars.org?subject=Hello%20from%20adars.org">Get In Touch →</a></p>
-  </section>
-</main>
-</div>
+<link rel="preload" as="image" href="../../images/job-search/grok-bot.png"/><div class="root"><header class="bar"><nav class="nav" aria-label="Site"><a class="brand" href="../../index.html#top">Shachar Adar</a><div class="navlinks"><a href="../../index.html#projects">Projects</a><a href="../../index.html#about">About</a><a href="#contact">Contact</a></div><a class="cta" href="#contact">Let’s Connect <span aria-hidden="true">→</span></a></nav></header><main class="case" id="top"><a class="case-back" href="../../index.html#projects">← All projects</a><section class="case-hero" aria-label="Dayline introduction"><div><div class="case-eyebrow"><span class="case-dot"></span> Data + AI case study</div><h1>Dayline<br/><span>A clearer picture</span></h1><p class="case-lead">Turns Family Link and YouTube activity into a nightly record, historical trends, app changes, and age-aware video review.</p><div class="case-actions"><a class="case-btn case-btn-primary" href="#workflow">Explore Dayline <span aria-hidden="true">↓</span></a><a class="case-btn" href="#evening-note">See the data flow</a></div><div class="case-meta" aria-label="Core technologies"><span>Python</span><i></i><span>FastAPI</span><i></i><span>Gemini</span><i></i><span>Grok</span></div></div><div class="case-visual"><div class="case-orbit case-orbit-a"></div><div class="case-orbit case-orbit-b"></div><div class="case-hero-card" aria-label="Dayline weekly dashboard preview"><div class="dash"><aside class="dash-side" aria-label="Dayline sections"><div class="dash-brand"><span class="dash-mark">D</span> Dayline</div><div class="dash-link active"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></rect><path d="M2 6h12M6 6v8M10 6v8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>Week</div><div class="dash-link"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 12 6 7l3 3 5-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>Trends</div><div class="dash-link"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></rect><rect x="9" y="2" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></rect><rect x="2" y="9" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></rect><rect x="9" y="9" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></rect></svg>Apps</div><div class="dash-link"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="4" width="13" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></rect><path d="m7 6.5 4 1.5-4 1.5Z" fill="currentColor" stroke="none"></path></svg>YouTube</div><div class="dash-link"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></circle><path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M12.6 3.4l-1.1 1.1M4.5 11.5l-1.1 1.1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>Settings</div></aside><div class="dash-main"><div class="dash-head"><b>This week</b><div class="week-meta"><span>Sample week</span><span class="fake-select">This week ⌄</span></div></div><div class="chart-card"><div class="metric">4h 49m<span>daily average</span></div><div class="bars" role="img" aria-label="Weekly device usage, Monday through Sunday"><div class="bar-col"><i style="height:40%"></i><em>Mon</em></div><div class="bar-col"><i style="height:56%"></i><em>Tue</em></div><div class="bar-col"><i style="height:78%"></i><em>Wed</em></div><div class="bar-col"><i style="height:51%"></i><em>Thu</em></div><div class="bar-col"><i style="height:64%"></i><em>Fri</em></div><div class="bar-col"><i style="height:89%"></i><em>Sat</em></div><div class="bar-col"><i style="height:44%"></i><em>Sun</em></div></div></div></div></div></div><div class="fact-row"><div class="case-float"><b>39 stored days</b></div><div class="case-float"><b>64 videos need a look</b></div><div class="case-float"><b>A missing night is not a zero</b></div></div></div></section><div class="sheet"><section class="problem" aria-labelledby="problem-title"><div class="problem-copy"><span class="target" aria-hidden="true">◎</span><div><div class="pill">The problem</div><h2 id="problem-title">The day is split across two places.</h2><p>Screen time is in Family Link. Video history is in YouTube.</p></div></div><ol class="mini-flow"><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8 38 17 24 26 10 17Z" fill="#ff4d6a"></path><path d="M10 17 24 26v14L10 31Z" fill="#ff4d6a" opacity=".72"></path><path d="M38 17 24 26v14l14-9Z" fill="#ff4d6a" opacity=".45"></path></svg><span>Family Link</span><small>Screen time and apps</small></li><li class="mini-arrow" aria-hidden="true">→</li><li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="14" width="36" height="22" rx="7" fill="#ff4d6a"></rect><path d="m20 20 11 5-11 5Z" fill="#fff"></path></svg><span>YouTube</span><small>Video history</small></li><li class="mini-arrow" aria-hidden="true">→</li><li><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#ff4d6a" d="M12 8h16l10 10v20a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z"></path><path fill="#fff" d="M28 8v10h10"></path><path stroke="#fff" stroke-width="2.4" stroke-linecap="round" d="M16 26h14M16 32h14"></path></svg><span>Manual comparison</span><small>Time-consuming and inconsistent</small></li><li class="mini-arrow" aria-hidden="true">→</li><li><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16" fill="#ff4d6a"></circle><path d="M19.5 19a4.6 4.6 0 1 1 6.4 4.2c-1.6 1.2-2.4 1.8-2.4 4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"></path><circle cx="24" cy="31.5" r="1.4" fill="#fff"></circle></svg><span>Missed context</span><small>Hard to see the bigger picture</small></li></ol></section><section class="solution" id="workflow" aria-labelledby="solution-title"><div class="kicker">The solution</div><h2 id="solution-title">One evening.<br/><span>Both sources.</span></h2><p class="sub">One nightly pipeline connects device activity, historical context, video review, and the evening note.</p><div class="flow-row" aria-label="Nightly Dayline workflow"><div class="flow-col"><article class="node"><div class="mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#eaf3ff"></rect><path d="M20 8 31 15 20 22 9 15Z" fill="#4285d4"></path><path d="M9 15 20 22v12L9 27Z" fill="#39a66b"></path><path d="M31 15 20 22v12l11-7Z" fill="#f1c84f"></path></svg></div><b>Family Link</b><small>Device time, apps</small></article><article class="node"><div class="mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#ffecec"></rect><rect x="8" y="12" width="24" height="16" rx="5" fill="#e4483c"></rect><path d="m17 16 8 4-8 4Z" fill="#fff"></path></svg></div><b>YouTube</b><small>Video history</small></article></div><span class="join" aria-hidden="true">→</span><div class="flow-col"><article class="node"><div class="mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#eef2f8"></rect><path d="M20 8a10 10 0 1 0 7 17.2A8.2 8.2 0 0 1 20 8Z" fill="#657185"></path><path d="m21 10 1.1 2.8 2.8 1.1-2.8 1.1L21 18l-1.1-3-2.8-1.1 2.8-1.1Z" fill="#657185"></path></svg></div><b>Nightly collector</b><small>Pulls and stores data</small></article></div><span class="join" aria-hidden="true">→</span><div class="flow-col"><article class="node"><div class="mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#eaf3ff"></rect><ellipse cx="20" cy="14" rx="8" ry="3.2" fill="none" stroke="#1479ff" stroke-width="1.8"></ellipse><path d="M12 14v10c0 3.2 16 3.2 16 0V14M12 19c0 3.2 16 3.2 16 0" fill="none" stroke="#1479ff" stroke-width="1.8"></path></svg></div><b>History</b><small>Keeps earlier days</small></article></div><span class="join" aria-hidden="true">→</span><div class="flow-col"><article class="node"><div class="mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#f3e8ff"></rect><path d="M20 8c.8 3.4 2.2 5.4 7.4 7.4C22.2 17.4 20.8 19.4 20 22.8 19.2 19.4 17.8 17.4 12.6 15.4 17.8 13.4 19.2 11.4 20 8Z" fill="#7048e8"></path></svg></div><b>Gemini</b><small>Video review</small></article><article class="node"><div class="mark"><img class="grok-bot" src="../../images/job-search/grok-bot.png" alt=""/></div><b>Grok</b><small>Note and ideas</small></article></div><span class="join" aria-hidden="true">→</span><div class="flow-col"><article class="node"><div class="mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#eaf3ff"></rect><rect x="11" y="11" width="18" height="18" rx="4" fill="none" stroke="#1479ff" stroke-width="1.8"></rect><path d="M15 24v-4M20 24V15M25 24v-6" stroke="#1479ff" stroke-width="1.8" stroke-linecap="round"></path></svg></div><b>Dayline</b><small>One view of the day</small></article></div></div></section><section class="block" id="evening-note" aria-labelledby="stage-01"><div class="split"><div><div class="tag"><span>01</span> The evening note</div><h2 id="stage-01">A single grounded note for each night.</h2><ul class="checks"><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Stored through the cutoff</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>The day is not marked complete</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Apps that held the time</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>A missing night is not a zero</li></ul></div><div class="preview" aria-hidden="true"><div class="preview-bar"><b>Evening note</b><span>Stored night</span></div><span class="pill-quiet">Nightly summary</span><p class="note">Screen activity was lower than the recent average before the evening cutoff. One video needs a closer look, and new app activity is kept with the night&#x27;s record.</p></div></div><details><summary><span class="when-closed">Learn more</span><span class="when-open">Show less</span></summary><div class="more"><b>How it works</b><p>Family Link and YouTube come in overnight.</p><p>The collector stores the night through the cutoff.</p><p>A night that was not stored is left as a gap.</p><p>Grok writes the note from that stored night, and the day is not marked complete.</p></div></details></section><section class="block" aria-labelledby="stage-02"><div class="split"><div><div class="tag"><span>02</span> History &amp; trends</div><h2 id="stage-02">Follow patterns across stored days.</h2><ul class="checks"><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Stored days only</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>A gap is a missing night</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>The day total is against the average of stored days</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>The highest day is called out</li></ul></div><div class="preview" aria-hidden="true"><div class="preview-bar"><b>Stored history</b><span class="fake-select">Year ⌄</span></div><div class="mini-chart-title"><span>Screen time</span><span>Stored activity</span></div><div class="mini-chart"><i style="height:33%"></i><i style="height:48%"></i><i style="height:28%"></i><i style="height:38%"></i><i style="height:61%"></i><i style="height:50%"></i><i style="height:35%"></i><i style="height:71%"></i><i style="height:56%"></i><i style="height:81%"></i><i style="height:47%"></i><i style="height:65%"></i><i style="height:91%"></i><i style="height:57%"></i><i style="height:43%"></i><i style="height:68%"></i><i style="height:49%"></i><i style="height:75%"></i></div><div class="mini-axis"><span>Week 1</span><span>Week 4</span><span>Week 8</span></div></div></div><details><summary><span class="when-closed">Learn more</span><span class="when-open">Show less</span></summary><div class="more"><b>How the week is counted</b><p>The chart shows stored days only.</p><p>A missing night is a gap, not a zero.</p><p>The day total is compared with the average of stored days.</p><p>The highest stored day is labeled.</p></div></details></section><section class="block" aria-labelledby="stage-03"><div class="split"><div><div class="tag"><span>03</span> Apps &amp; change</div><h2 id="stage-03">Find new apps and usage changes.</h2><ul class="checks"><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>New apps flagged</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Time per app</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Compared with the previous stored day</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Nothing is changed on the device</li></ul></div><div class="preview" aria-hidden="true"><div class="preview-bar"><b>Apps</b><span>Last 7 stored days</span></div><div class="tabs"><span class="tab">All apps</span><span class="tab active">New apps</span><span class="tab">Ideas</span></div><div class="app-row"><span class="app-icon roblox">◇</span><span class="app-name">Roblox</span><span class="app-time">1h 37m</span></div><div class="app-row"><span class="app-icon youtube">▶</span><span class="app-name">YouTube</span><span class="app-time">52m</span></div><div class="app-row"><span class="app-icon chrome">◉</span><span class="app-name">Chrome</span><span class="app-time">28m</span></div><div class="app-row"><span class="app-icon whatsapp">●</span><span class="app-name">WhatsApp</span><span class="app-time">16m</span></div></div></div><details><summary><span class="when-closed">Learn more</span><span class="when-open">Show less</span></summary><div class="more"><b>Where the app list comes from</b><p>App time comes from Family Link.</p><p>A new app is flagged against the last stored day.</p><p>Each row is the time on that app for the stored night.</p><p>The list is a record. Nothing is changed on the device.</p></div></details></section><section class="block" aria-labelledby="stage-04"><div class="split"><div><div class="tag"><span>04</span> YouTube review</div><h2 id="stage-04">Video flags include a reason.</h2><ul class="checks"><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Gemini reads the video</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>A flag is not a no</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>The reason sits next to the flag</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Grok does not judge the video</li></ul></div><div class="preview" aria-hidden="true"><div class="preview-bar"><b>YouTube</b><span>Video review</span></div><div class="tabs"><span class="tab">All videos</span><span class="tab active">Needs a look</span><span class="tab">Unsuitable</span></div><div class="video-row"><div class="thumb"><svg viewBox="0 0 72 52" aria-hidden="true"><rect width="72" height="52" fill="#9eb4c4"></rect><path d="M6 40 24 14l14 16 8-8 16 18Z" fill="#526d83"></path><circle cx="50" cy="14" r="5" fill="#f0d89c"></circle></svg></div><div class="video-copy"><div class="video-name">Ocean Creatures Explained</div><div class="video-time">Video checked against age guidance</div><span class="status">Needs a look</span></div></div><div class="video-row"><div class="thumb"><svg viewBox="0 0 72 52" aria-hidden="true"><rect width="72" height="52" fill="#c9d7b4"></rect><path d="M4 42h64L36 18Z" fill="#8b9a77"></path><path d="M18 42V24h14v18M40 42V18h12v24" fill="#7e8c96"></path></svg></div><div class="video-copy"><div class="video-name">Build a City in Minecraft</div><div class="video-time">Video checked against age guidance</div><span class="status fine">Fine</span></div></div></div></div><details><summary><span class="when-closed">Learn more</span><span class="when-open">Show less</span></summary><div class="more"><b>What the flag means</b><p>Gemini reads the video and writes the reason.</p><p>Needs a look is not a no.</p><p>The reason sits on the row.</p><p>Grok writes the evening note. Grok does not judge the video.</p></div></details></section><section class="ai-wrap" aria-labelledby="ai-title"><h2 id="ai-title">AI does the repetitive reading.<br/>The system keeps the context.</h2><div class="ai-cards"><article class="ai-card"><div class="ai-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#f3e8ff"></rect><path d="M20 8c.8 3.4 2.2 5.4 7.4 7.4C22.2 17.4 20.8 19.4 20 22.8 19.2 19.4 17.8 17.4 12.6 15.4 17.8 13.4 19.2 11.4 20 8Z" fill="#7048e8"></path></svg></div><div><h3>Gemini</h3><p class="role">Video review</p><p>Looks at videos through the day and provides the reasoning behind an age-related concern.</p></div></article><article class="ai-card"><div class="ai-icon"><img class="grok-bot" src="../../images/job-search/grok-bot.png" alt=""/></div><div><h3>Grok</h3><p class="role">Evening intelligence</p><p>Writes the evening note and suggests apps based on observed usage.</p></div></article></div></section><section class="foot" aria-label="Technologies and takeaways"><div><div class="kicker">Technologies</div><ul class="tech"><li><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#e8f4ff"></rect><path d="M20 7c-5 0-5 2.2-5 2.2v3.6h5.2v1.1H12.4S8 13.4 8 20.2 12.2 26 12.2 26h2.4v-3.6s-.1-2.2 4.3-2.2h5.2s4.1.1 4.1-4V9.4S25.2 7 20 7Zm-2.6 2.2a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z" fill="#3776ab"></path><path d="M20 33c5 0 5-2.2 5-2.2v-3.6h-5.2v-1.1h7.8S32 26.6 32 19.8 27.8 14 27.8 14h-2.4v3.6s.1 2.2-4.3 2.2h-5.2s-4.1-.1-4.1 4v7.2S14.8 33 20 33Zm2.6-2.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4Z" fill="#ffd343"></path></svg>Python</li><li><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#e7f8f4"></rect><path d="M12 26 22 8h6L18 26H12Zm8 6 4-8h6l-4 8h-6Z" fill="#059669"></path></svg>FastAPI</li><li><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#fff1e8"></rect><path d="M14 12h8l6 6v12H14V12Z" fill="#fff" stroke="#d97706" stroke-width="1.6"></path><path d="M22 12v6h6" fill="none" stroke="#d97706" stroke-width="1.6"></path><path d="M17 23h8M17 27h6" stroke="#d97706" stroke-width="1.4" stroke-linecap="round"></path></svg>Jinja</li><li><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#f3e8ff"></rect><path d="M20 8c.8 3.4 2.2 5.4 7.4 7.4C22.2 17.4 20.8 19.4 20 22.8 19.2 19.4 17.8 17.4 12.6 15.4 17.8 13.4 19.2 11.4 20 8Z" fill="#7048e8"></path></svg>Gemini API</li><li><img class="grok-bot" src="../../images/job-search/grok-bot.png" alt=""/>Grok API</li><li><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#eaf3ff"></rect><path d="M20 8 31 15 20 22 9 15Z" fill="#4285d4"></path><path d="M9 15 20 22v12L9 27Z" fill="#39a66b"></path><path d="M31 15 20 22v12l11-7Z" fill="#f1c84f"></path></svg>Family Link</li><li><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#ffecec"></rect><rect x="8" y="12" width="24" height="16" rx="5" fill="#e4483c"></rect><path d="m17 16 8 4-8 4Z" fill="#fff"></path></svg>YouTube</li></ul></div><div><div class="kicker">Key takeaways</div><ul class="checks tight"><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>One nightly pipeline.</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Missing days stay missing.</li><li><svg class="tick blue" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10"></circle><path d="M5.5 10.2 8.4 13l6.1-6.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>Gemini reads the videos. Grok writes the note.</li></ul></div></section></div></main><footer class="site-footer" id="contact"><div><h2>Let’s Connect</h2><p>I’m always open to interesting projects, collaboration, or new opportunities.</p></div><div class="social"><a class="round" href="https://www.linkedin.com/in/shachar-adar/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0a66c2" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77A1.75 1.75 0 0 0 0 1.73v20.54C0 23.2.8 24 1.77 24h20.46A1.75 1.75 0 0 0 24 22.27V1.73A1.75 1.75 0 0 0 22.23 0z"></path></svg></a><a class="round" href="https://github.com/MetallicAchu" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.89-2.78.62-3.37-1.2-3.37-1.2-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.63-1.38-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"></path></svg></a><a class="round" href="mailto:shachar@adars.org?subject=Hello%20from%20adars.org" aria-label="Email">✉</a><div class="footer-actions"><a class="cta" href="mailto:shachar@adars.org?subject=Hello%20from%20adars.org">Get In Touch →</a><a class="cta" href="../../images/shachar-adar-cv.pdf" download="">Download CV</a></div></div></footer></div>
 </body>
 </html>
