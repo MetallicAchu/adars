@@ -1420,6 +1420,12 @@ img.shot {
   max-width: 100%;
 }
 .case-hero-card:has(> img.shot),
+.preview:has(> img.shot),
+.shot-follow {
+  max-height: 420px;
+  overflow: hidden;
+}
+.case-hero-card:has(> img.shot),
 .preview:has(> img.shot) {
   padding: 0;
 }
